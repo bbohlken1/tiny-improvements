@@ -1,52 +1,90 @@
 import React, { Component } from "react";
-import { Col, Container, Row, Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
-import AwardCard from './AwardCard'
+import { Col, Container, Row, Button, Form, FormGroup, Label, Input, FormText, Card, CardBody } from "reactstrap";
+import AwardCard from './Components/AwardCard';
+import KudosForm from './Components/KudosForm';
+import PetCard from './Components/PetCard';
+import axios from 'axios';
+
 
 class App extends Component {
 
   constructor() {
     super();
     this.state = {
-      users: [
-        {
-          userId: 45089,
-          name: "Owen",
-          position: "Captian of the Breakroom"
-        },
-        {
-          userId: 223,
-          name: "Brooke",
-          position: "Winner of All Dance-Offs"
-        },
-        {
-          userId: 6582,
-          name: "Gobi",
-          position: "King of Mid-Day Naps1"
-        }
-      ],
+      users: [],
+      friends: [],
 
-      awards: [
-        {
-          id: 1,
-          title: "Best Boss Award!",
-          comment: "Thanks for always looking out for us."
-        },
-        {
-          id: 2,
-          title: "Longest Commute Award!",
-          comment: "I can't believe Leslie makes it to work as often as she does."
-        },
-        {
-          id: 3,
-          title: "Most likely to nap at work!",
-          comment: "Maybe you need more coffee."
-        }
+      awards: [],
 
+      pets: [
+        {
+          name: 'Memphis',
+          age: 12,
+          type: 'Dog'
+        },
+        {
+          name: 'Baby',
+          age: 11,
+          type: 'Panther'
+        },
+        {
+          name: 'Peach',
+          age: 3,
+          type: 'Cat'
+        },
+        {
+          name: 'Opal',
+          age: 1,
+          type: 'Kitten'
+        }
       ]
+
 
     }
 
   }
+
+
+  componentDidMount = () => {
+    axios.get("/api/users").then(response => {
+      this.setState({
+        users: response.data
+      })
+    })
+
+
+
+    axios.get("/api/friends").then(response => {
+      this.setState({
+        friends: response.data
+      })
+    })
+
+
+
+    //   axios.post("/api/friends", {
+    //     name: 'Sampson Alva',
+    //     location: 'San Fransisco, CA'
+    // }).then(response => {
+    //     this.setState({
+    //         friends: response.data
+    //     })
+    // })
+
+
+    axios.post("/api/kudos",
+      {
+        id: 4,
+        title: "Loudest Easter Award",
+        comment: "Who chews carrots like that at work??"
+      }
+    ).then(response => {
+      this.setState({
+        awards: response.data
+      })
+    })
+
+  };
 
   render() {
 
@@ -63,38 +101,45 @@ class App extends Component {
             <Button color="success">Give Kudos</Button>
           </Col>
           <Col md="12" lg="9">
-            {this.state.awards.map(award => <AwardCard title={award.title} comment={award.comment} />)}
+            {this.state.awards.map(award => <AwardCard title={award.title} comment={award.comment} receiver={award.receiver} sender={award.sender} />)}
           </Col>
+
         </Row>
-
-
-        <h1>Names</h1>
-        <p>{this.state.users[0].name}</p>
-        <p>{this.state.users[1].name}</p>
-        <p>{this.state.users[2].name}</p>
-        {this.state.users.map(user => <p>Hello, my name is {user.name}</p>)}
 
         <Row>
           <Col md="12">
-            <Form>
-              <FormGroup>
-                <Label>Give Kudos to</Label>
-                <Input type="select">
-                  {this.state.users.map(user => <option>{user.name}</option>)}
-                </Input>
-              </FormGroup>
-              <FormGroup>
-                <Input type="text" placeholder="Kudos Title" />
-              </FormGroup>
-              <FormGroup>
-                <Label>Username</Label>
-                <Input type="text" placeholder="username" />
-              </FormGroup>
-            </Form>
+            <KudosForm name={this.state.users.map(user => <option> {user.name} </option>)} />
           </Col>
         </Row>
 
         {/*New Code Goes Below Here */}
+
+
+        {
+          this.state.pets.map(pet => <PetCard name={pet.name} age={pet.age} />)
+        }
+
+        {
+          this.state.awards.map((award, index) => <AwardCard key={index} title={award.title} comment={award.comment} />)
+        }
+
+        <hr />
+        <h1> 🙋🏽 Friend Space </h1>
+        <br />
+        <h4> My Friend List: </h4>
+        <br />
+        {
+          this.state.friends.map((friend, index) =>
+            <Card key={index}>
+              <CardBody >
+                <h2> {friend.name}</h2>
+                <p> {friend.location} </p>
+              </CardBody>
+            </Card>
+          )
+        }
+
+
 
       </Container>
     );
