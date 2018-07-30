@@ -12,33 +12,11 @@ class App extends Component {
     super();
     this.state = {
       users: [],
-      // friends: [],
-
       awards: [],
-      kudo: "",
+      kudosText: '',
+      kudosTitle: '',
+      // r QUESTIONS why dont sender and receiver need to be defined here?
 
-      // pets: [
-      //   {
-      //     name: 'Memphis',
-      //     age: 12,
-      //     type: 'Dog'
-      //   },
-      //   {
-      //     name: 'Baby',
-      //     age: 11,
-      //     type: 'Panther'
-      //   },
-      //   {
-      //     name: 'Peach',
-      //     age: 3,
-      //     type: 'Cat'
-      //   },
-      //   {
-      //     name: 'Opal',
-      //     age: 1,
-      //     type: 'Kitten'
-      //   }
-      // ]
 
 
     }
@@ -63,16 +41,31 @@ class App extends Component {
   }
 
   //------------------------------
-  updateKudo = event => {
-    this.setState({ kudo: event.target.value })
+  updateKudosText = event => {
+    this.setState({ kudosText: event.target.value })
   };
+
+  updateKudosTitle = event => {
+    this.setState({ kudosTitle: event.target.value })
+  };
+
+  updateReceiver = event => {
+    this.setState({ receiver: event.target.value })
+  }
+  //QUESTION: why doeesn't my kudos form recognize the default sender/receiver option on first input. and only recognizes a user on change
+
+  updateSender = event => {
+    this.setState({ sender: event.target.value })
+  }
 
   postKudo = () => {
     axios.post("/api/kudos",
       {
         id: 5,
-        title: this.state.kudo,
-        comment: "Have you seen how fast George types??"
+        title: this.state.kudosTitle,
+        comment: this.state.kudosText,
+        receiver: this.state.receiver,
+        sender: this.state.sender,
       })
       .then(response => {
         this.setState({
@@ -91,7 +84,7 @@ class App extends Component {
       <Container>
         <Row>
           <Col md="12">
-            <h1>Tiny Progress {this.state.kudo}</h1>
+            <h1>Tiny Progress</h1>
           </Col>
         </Row>
         <br />
@@ -109,42 +102,17 @@ class App extends Component {
           <Col md="12">
             <KudosForm
               postKudo={this.postKudo}
-              updateKudo={this.updateKudo}
-              kudo={this.state.kudo}
-              name={this.state.users.map(user => <option> {user.name} </option>)}
+              updateKudosText={this.updateKudosText}
+              updateKudosTitle={this.updateKudosTitle}
+              updateReceiver={this.updateReceiver}
+              updateSender={this.updateSender}
+              receiver={this.state.users.map(user => <option> {user.name} </option>)}
+              sender={this.state.users.map(user => <option> {user.name} </option>)}
             />
           </Col>
         </Row>
 
         {/*New Code Goes Below Here */}
-
-        {/* <Row><Col md="12">
-          <Button onClick={this.postKudo} >Click Me</Button>
-        </Col></Row> */}
-        {/* {
-        //   this.state.pets.map(pet => <PetCard name={pet.name} age={pet.age} />)
-        // } */}
-
-        {/* // {
-        //   this.state.awards.map((award, index) => <AwardCard key={index} title={award.title} comment={award.comment} />)
-        // } */}
-
-        {/* <hr />
-        <h1> 🙋🏽 Friend Space </h1>
-        <br />
-        <h4> My Friend List: </h4>
-        <br />
-        {
-          this.state.friends.map((friend, index) =>
-            <Card key={index}>
-              <CardBody >
-                <h2> {friend.name}</h2>
-                <p> {friend.location} </p>
-              </CardBody>
-            </Card>
-          )
-        } */}
-
 
 
       </Container>

@@ -8,7 +8,7 @@ const AwardCard = props => (
             <p>Badge Name</p>
             <h2> {props.title} </h2>
             <img alt="avatar" src="https://www.iranketab.ir/Images/user.jpg" width="100px" />
-            <h6> {props.receiver} </h6>
+            <h5> {props.receiver} </h5>
             <p> "{props.comment}"  -  {props.sender}</p>
         </CardBody>
     </Card>
