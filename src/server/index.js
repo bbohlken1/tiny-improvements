@@ -49,7 +49,7 @@ const friends = [
     }
 ];
 
-awards: [
+const awards = [
     {
         id: 1,
         title: "Best Boss Award!",
@@ -72,9 +72,9 @@ awards: [
         receiver: "Owen"
     }
 
-],
+];
 
-    app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(express.static("public"));
@@ -83,9 +83,9 @@ app.get("/api/users", (req, res) => res.json(users));
 app.get("/api/friends", (req, res) => res.json(friends));
 app.get("/api/kudos", (req, res) => res.json(awards))
 app.post("/api/kudos", (req, res) => {
-    awards.push(req.body)
-    res.json(awards)
-})
+    awards.push(req.body);
+    res.json(awards);
+});
 
 
 app.listen(PORT, function () {

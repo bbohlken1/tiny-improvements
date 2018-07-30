@@ -12,32 +12,33 @@ class App extends Component {
     super();
     this.state = {
       users: [],
-      friends: [],
+      // friends: [],
 
       awards: [],
+      kudo: "",
 
-      pets: [
-        {
-          name: 'Memphis',
-          age: 12,
-          type: 'Dog'
-        },
-        {
-          name: 'Baby',
-          age: 11,
-          type: 'Panther'
-        },
-        {
-          name: 'Peach',
-          age: 3,
-          type: 'Cat'
-        },
-        {
-          name: 'Opal',
-          age: 1,
-          type: 'Kitten'
-        }
-      ]
+      // pets: [
+      //   {
+      //     name: 'Memphis',
+      //     age: 12,
+      //     type: 'Dog'
+      //   },
+      //   {
+      //     name: 'Baby',
+      //     age: 11,
+      //     type: 'Panther'
+      //   },
+      //   {
+      //     name: 'Peach',
+      //     age: 3,
+      //     type: 'Cat'
+      //   },
+      //   {
+      //     name: 'Opal',
+      //     age: 1,
+      //     type: 'Kitten'
+      //   }
+      // ]
 
 
     }
@@ -59,32 +60,30 @@ class App extends Component {
         friends: response.data
       })
     })
+  }
 
+  //------------------------------
+  updateKudo = event => {
+    this.setState({ kudo: event.target.value })
+  };
 
-
-    //   axios.post("/api/friends", {
-    //     name: 'Sampson Alva',
-    //     location: 'San Fransisco, CA'
-    // }).then(response => {
-    //     this.setState({
-    //         friends: response.data
-    //     })
-    // })
-
-
+  postKudo = () => {
     axios.post("/api/kudos",
       {
-        id: 4,
-        title: "Loudest Easter Award",
-        comment: "Who chews carrots like that at work??"
-      }
-    ).then(response => {
-      this.setState({
-        awards: response.data
+        id: 5,
+        title: this.state.kudo,
+        comment: "Have you seen how fast George types??"
       })
-    })
+      .then(response => {
+        this.setState({
+          awards: response.data
+        })
+      })
 
   };
+
+
+
 
   render() {
 
@@ -92,14 +91,14 @@ class App extends Component {
       <Container>
         <Row>
           <Col md="12">
-            <h1>Tiny Progress</h1>
+            <h1>Tiny Progress {this.state.kudo}</h1>
           </Col>
         </Row>
         <br />
         <Row>
-          <Col md="12" lg="3">
+          {/* <Col md="12" lg="3">
             <Button color="success">Give Kudos</Button>
-          </Col>
+          </Col> */}
           <Col md="12" lg="9">
             {this.state.awards.map(award => <AwardCard title={award.title} comment={award.comment} receiver={award.receiver} sender={award.sender} />)}
           </Col>
@@ -108,22 +107,29 @@ class App extends Component {
 
         <Row>
           <Col md="12">
-            <KudosForm name={this.state.users.map(user => <option> {user.name} </option>)} />
+            <KudosForm
+              postKudo={this.postKudo}
+              updateKudo={this.updateKudo}
+              kudo={this.state.kudo}
+              name={this.state.users.map(user => <option> {user.name} </option>)}
+            />
           </Col>
         </Row>
 
         {/*New Code Goes Below Here */}
 
+        {/* <Row><Col md="12">
+          <Button onClick={this.postKudo} >Click Me</Button>
+        </Col></Row> */}
+        {/* {
+        //   this.state.pets.map(pet => <PetCard name={pet.name} age={pet.age} />)
+        // } */}
 
-        {
-          this.state.pets.map(pet => <PetCard name={pet.name} age={pet.age} />)
-        }
+        {/* // {
+        //   this.state.awards.map((award, index) => <AwardCard key={index} title={award.title} comment={award.comment} />)
+        // } */}
 
-        {
-          this.state.awards.map((award, index) => <AwardCard key={index} title={award.title} comment={award.comment} />)
-        }
-
-        <hr />
+        {/* <hr />
         <h1> 🙋🏽 Friend Space </h1>
         <br />
         <h4> My Friend List: </h4>
@@ -137,7 +143,7 @@ class App extends Component {
               </CardBody>
             </Card>
           )
-        }
+        } */}
 
 
 
