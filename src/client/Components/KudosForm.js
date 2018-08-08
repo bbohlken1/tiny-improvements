@@ -3,6 +3,8 @@ import {
     Col, Container, Row, Form, FormGroup, Input, Label, Button, Card,
     CardBody,
 } from "reactstrap";
+
+
 const KudosForm = props => (
     <Col md="12" lg="9">
 
@@ -28,7 +30,7 @@ const KudosForm = props => (
                 </Input>
             </FormGroup>
         </Form>
-        <Button onClick={props.postKudo} color="success">Give Kudos</Button>
+        <Button onClick={props.postKudo} color="success" >Give Kudos</Button>
     </Col>
 
 

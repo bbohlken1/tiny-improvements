@@ -2,9 +2,12 @@ import React, { Component } from "react";
 import { Col, Container, Row, Button, Form, FormGroup, Label, Input, FormText, Card, CardBody } from "reactstrap";
 import AwardCard from './Components/AwardCard';
 import KudosForm from './Components/KudosForm';
-import PetCard from './Components/PetCard';
+import Filter from './Components/Filter';
 import axios from 'axios';
 
+
+
+document.body.style.backgroundColor = "lavender";
 
 class App extends Component {
 
@@ -15,13 +18,12 @@ class App extends Component {
       awards: [],
       kudosText: '',
       kudosTitle: '',
-      // r QUESTIONS why dont sender and receiver need to be defined here?
-
-
+      filterName: '',
 
     }
 
   }
+
 
 
   componentDidMount = () => {
@@ -31,13 +33,12 @@ class App extends Component {
       })
     })
 
-
-
-    axios.get("/api/friends").then(response => {
+    axios.get("/api/kudos").then(response => {
       this.setState({
-        friends: response.data
+        awards: response.data
       })
     })
+
   }
 
   //------------------------------
@@ -52,30 +53,43 @@ class App extends Component {
   updateReceiver = event => {
     this.setState({ receiver: event.target.value })
   }
-  //QUESTION: why doeesn't my kudos form recognize the default sender/receiver option on first input. and only recognizes a user on change
 
   updateSender = event => {
     this.setState({ sender: event.target.value })
+  };
+
+  updateFilter = event => {
+    axios.get("/api/kudosfilter/" + event.target.value).then(response => {
+      this.setState({
+        awards: response.data
+      })
+    })
+
   }
 
   postKudo = () => {
+    alert("BOP BOP - You done did it!!");
     axios.post("/api/kudos",
       {
-        id: 5,
-        title: this.state.kudosTitle,
-        comment: this.state.kudosText,
-        receiver: this.state.receiver,
-        sender: this.state.sender,
+        id: this.state.users.find(user => user.name === this.state.sender).id,
+        Name: this.state.kudosTitle,
+        Comment__c: this.state.kudosText,
+        Receiver__c: this.state.users.find(user => user.name === this.state.receiver).id,
+        Sender__c: this.state.users.find(user => user.name === this.state.sender).id,
       })
       .then(response => {
-        this.setState({
-          awards: response.data
-        })
+
       })
 
   };
 
-
+  clearFilter = () => {
+    axios.get("/api/kudos").then(response => {
+      this.setState({
+        awards: response.data
+      })
+    })
+  };
 
 
   render() {
@@ -84,20 +98,10 @@ class App extends Component {
       <Container>
         <Row>
           <Col md="12">
-            <h1>Tiny Progress</h1>
+            <h1>Ku Ku Kudo-Choo</h1>
           </Col>
         </Row>
         <br />
-        <Row>
-          {/* <Col md="12" lg="3">
-            <Button color="success">Give Kudos</Button>
-          </Col> */}
-          <Col md="12" lg="9">
-            {this.state.awards.map(award => <AwardCard title={award.title} comment={award.comment} receiver={award.receiver} sender={award.sender} />)}
-          </Col>
-
-        </Row>
-
         <Row>
           <Col md="12">
             <KudosForm
@@ -106,13 +110,32 @@ class App extends Component {
               updateKudosTitle={this.updateKudosTitle}
               updateReceiver={this.updateReceiver}
               updateSender={this.updateSender}
-              receiver={this.state.users.map(user => <option> {user.name} </option>)}
-              sender={this.state.users.map(user => <option> {user.name} </option>)}
+              receiver={this.state.users.map((user, index) => <option key={index}> {user.name} </option>)}
+              sender={this.state.users.map((user, index) => <option key={index} > {user.name} </option>)}
             />
           </Col>
         </Row>
+        <br />
+        <br />
+        <Row>
+          <Col md="12">
+            {this.state.filterName}
+            <Filter
+              receiver={this.state.users.map((user, index) => <option key={index}> {user.name} </option>)}
+              filterName={this.updateFilter}
+              clearFilter={this.clearFilter}
+            />
+          </Col>
+        </Row>
+        <br />
 
-        {/*New Code Goes Below Here */}
+        <Row>
+          {console.log(this.state.awards)}
+          <Col md="12" lg="9">
+            {this.state.awards.map((award, index) => <AwardCard key={index} title={award.name} comment={award.comment__c} receiver={award.receiver__r.Name} sender={award.sender__r.Name} />)}
+          </Col>
+
+        </Row>
 
 
       </Container>
